@@ -61,12 +61,19 @@ function preload() {
   gameOverImg = loadImage("images/game-over.png");
 }
 
+function resetGameValues() {
+  score = 0;
+  lives = 3;
+  x = 0;
+  isPlay = false;
+  loop(); // Restart the game loop
+}
+
 function setup() {
   cnv = createCanvas(800, 635);
   sword = new Sword(color("#FFFFFF"));
   frameRate(60);
-  score = 0;
-  lives = 3;
+  resetGameValues();
 }
 
 document.addEventListener("click", mouseClicked);
@@ -103,10 +110,10 @@ function draw() {
     lives = 0;
 
     // Display instructions to click anywhere to go back to the home page
-    textAlign(CENTER);
-    fill(255);
-    textSize(20);
-    text("Try again", width / 1.2, height / 1.2 + 30);
+    //textAlign(CENTER);
+    //fill(255);
+    //textSize(20);
+    //text("Try again", width / 1.2, height / 1.2 + 30);
   }
 }
 
@@ -240,6 +247,8 @@ function resetGame() {
   loop(); // Restart the game loop
 }
 
+let countdown = 5; // Set the initial countdown value
+
 function gameOver() {
   noLoop();
   over.play();
@@ -247,4 +256,30 @@ function gameOver() {
   background(bg);
   image(this.gameOverImg, 155, 260, 490, 85);
   lives = 0;
+
+  // Display countdown on the game over screen
+  textAlign(CENTER, CENTER);
+  fill(255);
+  textSize(10); // Adjust the text size to be smaller
+  text("Redirecting in " + countdown + " seconds", width / 2, height / 1.2 + 30);
+
+  // Function to update countdown every second
+  let countdownInterval = setInterval(() => {
+    if (countdown === 0) {
+      clearInterval(countdownInterval); // Stop the countdown
+      window.location.href = 'index.html'; // Redirect to the main page
+    } else {
+      // Update displayed countdown number
+      clear();
+      background(bg);
+      textAlign(CENTER, CENTER);
+      textSize(30);
+      image(this.gameOverImg, 155, 260, 490, 85);
+      text("Redirecting in " + countdown + " seconds", width / 2, height / 1.2 + 80); // Display the countdown number
+
+      countdown--; // Decrement the countdown
+    }
+  }, 1000); // Update countdown every 1000ms (1 second)
 }
+
+
