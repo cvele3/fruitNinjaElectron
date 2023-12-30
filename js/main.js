@@ -1,4 +1,5 @@
 // GENERAL VARIABLES
+let startHoverTime = 0;
 var cnv;
 var score,
   points = 0;
@@ -97,6 +98,10 @@ function draw() {
   image(this.newGameImg, 310, 360, 200, 200);
   image(this.fruitImg, 365, 415, 90, 90);
 
+  if (!isPlay) {
+    check();
+  }
+
   if (isPlay) {
     game();
   }
@@ -117,11 +122,33 @@ function draw() {
   }
 }
 
-function check() {
+//Stara check() funckija
+/*function check() {
   // Check for game start
   if (!isPlay && mouseX > 300 && mouseX < 520 && mouseY > 350 && mouseY < 550) {
     start.play();
     isPlay = true;
+  }
+}*/
+
+function check() {
+  // Check for game start
+  if (!isPlay && mouseX > 300 && mouseX < 520 && mouseY > 350 && mouseY < 550) {
+    console.log(
+      "Mouse over start button for",
+      frameCount - startHoverFrame,
+      "frames"
+    );
+    if (!startHoverFrame) {
+      startHoverFrame = frameCount; // Zapamti trenutni frame kad je miš iznad tipke
+    }
+    if (frameCount - startHoverFrame >= 180) {
+      // Ako je miš bio iznad tipke 3 sekunde (60 fps * 3 s), pokreni igru
+      start.play();
+      isPlay = true;
+    }
+  } else {
+    startHoverFrame = 0; // Resetiraj vremensku varijablu ako miš nije iznad tipke
   }
 }
 
@@ -261,13 +288,17 @@ function gameOver() {
   textAlign(CENTER, CENTER);
   fill(255);
   textSize(10); // Adjust the text size to be smaller
-  text("Redirecting in " + countdown + " seconds", width / 2, height / 1.2 + 30);
+  text(
+    "Redirecting in " + countdown + " seconds",
+    width / 2,
+    height / 1.2 + 30
+  );
 
   // Function to update countdown every second
   let countdownInterval = setInterval(() => {
     if (countdown === 0) {
       clearInterval(countdownInterval); // Stop the countdown
-      window.location.href = 'index.html'; // Redirect to the main page
+      window.location.href = "index.html"; // Redirect to the main page
     } else {
       // Update displayed countdown number
       clear();
@@ -275,11 +306,13 @@ function gameOver() {
       textAlign(CENTER, CENTER);
       textSize(30);
       image(this.gameOverImg, 155, 260, 490, 85);
-      text("Redirecting in " + countdown + " seconds", width / 2, height / 1.2 + 80); // Display the countdown number
+      text(
+        "Redirecting in " + countdown + " seconds",
+        width / 2,
+        height / 1.2 + 80
+      ); // Display the countdown number
 
       countdown--; // Decrement the countdown
     }
   }, 1000); // Update countdown every 1000ms (1 second)
 }
-
-
